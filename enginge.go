@@ -50,11 +50,6 @@ func (c *ChatBot) joinChannels() error {
 	return nil
 }
 
-func (c *ChatBot) initHandlers() error {
-	c.wsHandlers = map[string]wsHandler{}
-	return nil
-}
-
 func (c *ChatBot) subscribe() error {
 	err := c.data.Client.SetWebSocketState(utopiago.SetWsStateTask{
 		Enabled:       true,

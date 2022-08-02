@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -32,6 +33,11 @@ func main() {
 			{ID: "D53B4431FD604E2F0261792444797AA4"},
 			{ID: "A59D8B62E1A59049564A4B0F8B457D45"},
 		},
+		Callbacks: uchatbot.ChatBotCallbacks{
+			OnContactMessage:        OnContactMessage,
+			OnChannelMessage:        OnChannelMessage,
+			OnPrivateChannelMessage: OnPrivateChannelMessage,
+		},
 		UseErrorCallback: true,
 		ErrorCallback:    onError,
 	})
@@ -42,12 +48,24 @@ func main() {
 	wait()
 }
 
-func onError(err error) {
-	log.Println("ERROR: " + err.Error())
-}
-
 func wait() {
 	ch := make(chan struct{})
 	// run in background
 	<-ch
+}
+
+func onError(err error) {
+	log.Println("ERROR: " + err.Error())
+}
+
+func OnContactMessage(m utopiago.InstantMessage) {
+	fmt.Println("[CONTACT] " + m.Nick + ": " + m.Text)
+}
+
+func OnChannelMessage(m utopiago.ChannelMessage) {
+	fmt.Println("[CHANNEL] " + m.Nick + ": " + m.Text)
+}
+
+func OnPrivateChannelMessage(m utopiago.ChannelMessage) {
+	fmt.Println("[PRIVATE] " + m.Nick + ": " + m.Text)
 }

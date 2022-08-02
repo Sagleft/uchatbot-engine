@@ -9,10 +9,17 @@ type ChatBot struct {
 	wsHandlers map[string]wsHandler
 }
 
+type ChatBotCallbacks struct {
+	OnContactMessage        func(utopiago.InstantMessage)
+	OnChannelMessage        func(utopiago.ChannelMessage)
+	OnPrivateChannelMessage func(utopiago.ChannelMessage)
+}
+
 type ChatBotData struct {
 	// required
-	Client *utopiago.UtopiaClient `json:"client"`
-	Chats  []Chat                 `json:"chats"` // channel ids
+	Client    *utopiago.UtopiaClient `json:"client"`
+	Chats     []Chat                 `json:"chats"` // channel ids
+	Callbacks ChatBotCallbacks
 
 	// optional
 	UseErrorCallback bool `json:"useErrorCallback"`

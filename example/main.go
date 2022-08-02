@@ -1,0 +1,53 @@
+package main
+
+import (
+	"log"
+	"os"
+
+	"github.com/Sagleft/uchatbot-engine"
+	utopiago "github.com/Sagleft/utopialib-go"
+)
+
+func main() {
+	APIHost := os.Getenv("HOST")
+	APIToken := os.Getenv("TOKEN")
+
+	if APIHost == "" {
+		log.Fatalln("API host is not set")
+	}
+
+	if APIToken == "" {
+		log.Fatalln("API token is not set")
+	}
+
+	_, err := uchatbot.NewChatBot(uchatbot.ChatBotData{
+		Client: &utopiago.UtopiaClient{
+			Protocol: "http",
+			Host:     APIHost,
+			Token:    APIToken,
+			Port:     22800,
+			WsPort:   25000,
+		},
+		Chats: []uchatbot.Chat{
+			{ID: "D53B4431FD604E2F0261792444797AA4"},
+			{ID: "A59D8B62E1A59049564A4B0F8B457D45"},
+		},
+		UseErrorCallback: true,
+		ErrorCallback:    onError,
+	})
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	wait()
+}
+
+func onError(err error) {
+	log.Println("ERROR: " + err.Error())
+}
+
+func wait() {
+	ch := make(chan struct{})
+	// run in background
+	<-ch
+}

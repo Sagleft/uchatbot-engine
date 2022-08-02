@@ -56,6 +56,16 @@ func (c *ChatBot) initHandlers() error {
 }
 
 func (c *ChatBot) subscribe() error {
+	err := c.data.Client.SetWebSocketState(utopiago.SetWsStateTask{
+		Enabled:       true,
+		Port:          c.data.Client.WsPort,
+		EnableSSL:     c.data.EnableWsSSL,
+		Notifications: "all",
+	})
+	if err != nil {
+		return err
+	}
+
 	return c.data.Client.WsSubscribe(utopiago.WsSubscribeTask{
 		OnConnected: c.onConnected,
 		Callback:    c.onMessage,

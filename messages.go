@@ -1,7 +1,11 @@
 package uchatbot
 
-import utopiago "github.com/Sagleft/utopialib-go"
+import (
+	"log"
 
-func (c *ChatBot) onMessage(ws utopiago.WsEvent) {
-	// TODO
+	utopiago "github.com/Sagleft/utopialib-go"
+)
+
+func (c *ChatBot) onMessage(event utopiago.WsEvent) {
+	log.Println(event.Type)
 }

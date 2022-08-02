@@ -15,7 +15,8 @@ type ChatBotData struct {
 	Chats  []Chat                 `json:"chats"` // channel ids
 
 	// optional
-	UseErrorCallback bool
+	UseErrorCallback bool `json:"useErrorCallback"`
+	EnableWsSSL      bool `json:"enableSSL"` // SSL for websocket connection
 	ErrorCallback    func(err error)
 }
 

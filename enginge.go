@@ -7,28 +7,6 @@ import (
 	utopiago "github.com/Sagleft/utopialib-go"
 )
 
-type ChatBot struct {
-	data ChatBotData
-}
-
-type ChatBotData struct {
-	// required
-	Client *utopiago.UtopiaClient `json:"client"`
-	Chats  []Chat                 `json:"chats"` // channel ids
-
-	// optional
-	UseErrorCallback bool
-	ErrorCallback    func(err error)
-}
-
-type Chat struct {
-	// required
-	ID string `json:"id"`
-
-	// optional
-	Password string `json:"password"`
-}
-
 // NewChatBot - create new chatbot and connect to Utopia.
 // the bot will try to join the list of the specified chats and subscribe to messages
 func NewChatBot(data ChatBotData) (*ChatBot, error) {
@@ -39,45 +17,54 @@ func NewChatBot(data ChatBotData) (*ChatBot, error) {
 
 	// create bot
 	cb := &ChatBot{
-		data: data,
+		data:       data,
+		wsHandlers: make(map[string]wsHandler),
 	}
 
-	// check connection
-	if !cb.data.Client.CheckClientConnection() {
-		return nil, errors.New("failed to connect to Utopia Client")
-	}
+	return cb, checkErrors(
+		cb.checkConnection,
+		cb.joinChannels,
+		cb.initHandlers,
+		cb.subscribe,
+	)
+}
 
-	// join to channels (chats)
-	for _, chat := range cb.data.Chats {
-		isJoined, err := cb.data.Client.JoinChannel(chat.ID, chat.Password)
+func (c *ChatBot) checkConnection() error {
+	if !c.data.Client.CheckClientConnection() {
+		return errors.New("failed to connect to Utopia Client")
+	}
+	return nil
+}
+
+func (c *ChatBot) joinChannels() error {
+	for _, chat := range c.data.Chats {
+		isJoined, err := c.data.Client.JoinChannel(chat.ID, chat.Password)
 		if err != nil {
-			return cb, err
+			return err
 		}
 
 		if !isJoined {
-			return cb, errors.New("failed to join in " + chat.ID)
+			return errors.New("failed to join in " + chat.ID)
 		}
 	}
+	return nil
+}
 
-	// subscribe to events
-	err := cb.data.Client.WsSubscribe(utopiago.WsSubscribeTask{
-		OnConnected: cb.onConnected,
-		Callback:    cb.onMessage,
-		ErrCallback: cb.onError,
-		Port:        data.Client.WsPort,
+func (c *ChatBot) initHandlers() error {
+	c.wsHandlers = map[string]wsHandler{}
+	return nil
+}
+
+func (c *ChatBot) subscribe() error {
+	return c.data.Client.WsSubscribe(utopiago.WsSubscribeTask{
+		OnConnected: c.onConnected,
+		Callback:    c.onMessage,
+		ErrCallback: c.onError,
+		Port:        c.data.Client.WsPort,
 	})
-	if err != nil {
-		return cb, err
-	}
-
-	return cb, nil
 }
 
 func (c *ChatBot) onConnected() {}
-
-func (c *ChatBot) onMessage(ws utopiago.WsEvent) {
-	// TODO
-}
 
 func (c *ChatBot) onError(err error) {
 	if err == nil {

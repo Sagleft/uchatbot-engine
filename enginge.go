@@ -11,8 +11,13 @@ type ChatBot struct {
 }
 
 type ChatBotData struct {
+	// required
 	Client *utopiago.UtopiaClient `json:"client"`
 	Chats  []Chat                 `json:"chats"` // channel ids
+
+	// optional
+	UseErrorCallback bool
+	ErrorCallback    func(err error)
 }
 
 type Chat struct {
@@ -26,6 +31,12 @@ type Chat struct {
 // NewChatBot - create new chatbot and connect to Utopia.
 // the bot will try to join the list of the specified chats and subscribe to messages
 func NewChatBot(data ChatBotData) (*ChatBot, error) {
+	// check data
+	if data.Client.WsPort == 0 {
+		return nil, errors.New("ws port is not set")
+	}
+
+	// create bot
 	cb := &ChatBot{
 		data: data,
 	}
@@ -47,5 +58,30 @@ func NewChatBot(data ChatBotData) (*ChatBot, error) {
 		}
 	}
 
+	// subscribe to events
+	err := cb.data.Client.WsSubscribe(utopiago.WsSubscribeTask{
+		OnConnected: cb.onConnected,
+		Callback:    cb.onMessage,
+		ErrCallback: cb.onError,
+		Port:        data.Client.WsPort,
+	})
+	if err != nil {
+		return cb, err
+	}
+
 	return cb, nil
+}
+
+func (c *ChatBot) onConnected() {}
+
+func (c *ChatBot) onMessage(ws utopiago.WsEvent) {
+	// TODO
+}
+
+func (c *ChatBot) onError(err error) {
+	if c.data.UseErrorCallback {
+		c.data.ErrorCallback(err)
+	} else {
+		// TODO
+	}
 }

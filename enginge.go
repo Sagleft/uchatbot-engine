@@ -2,6 +2,7 @@ package uchatbot
 
 import (
 	"errors"
+	"log"
 
 	utopiago "github.com/Sagleft/utopialib-go"
 )
@@ -79,9 +80,13 @@ func (c *ChatBot) onMessage(ws utopiago.WsEvent) {
 }
 
 func (c *ChatBot) onError(err error) {
+	if err == nil {
+		return
+	}
+
 	if c.data.UseErrorCallback {
 		c.data.ErrorCallback(err)
 	} else {
-		// TODO
+		log.Println("ERROR: " + err.Error())
 	}
 }

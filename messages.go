@@ -97,5 +97,5 @@ func (c *ChatBot) onPrivateChannelMessage(event utopiago.WsEvent) {
 		return
 	}
 
-	c.data.Callbacks.OnChannelMessage(message)
+	c.data.Callbacks.OnPrivateChannelMessage(message)
 }

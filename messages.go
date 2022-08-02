@@ -1,9 +1,6 @@
 package uchatbot
 
 import (
-	"encoding/json"
-	"log"
-
 	utopiago "github.com/Sagleft/utopialib-go"
 )
 
@@ -17,12 +14,12 @@ func (c *ChatBot) initHandlers() error {
 }
 
 func (c *ChatBot) onMessage(event utopiago.WsEvent) {
-	data, err := json.MarshalIndent(event, "", "\t")
-	if err != nil {
-		log.Println(err.Error())
-	} else {
-		log.Println(string(data))
+	handler, isEventTypeKown := c.wsHandlers[event.Type]
+	if !isEventTypeKown {
+		return
 	}
+
+	handler(event)
 }
 
 /*{

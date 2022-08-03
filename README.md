@@ -14,11 +14,13 @@ The engine can:
 Planned features:
 1. automatically accept authorization requests;
 2. send welcome messages.
+3. processing payments.
 
 ## Using the engine
 
 1. Chatbots that raise and retain user activity in channels.
 2. Bots for performing services to users.
+3. Creating a bot constructor.
 
 ## Install
 

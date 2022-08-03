@@ -15,6 +15,11 @@ Planned features:
 1. automatically accept authorization requests;
 2. send welcome messages.
 
+## Using the engine
+
+1. Chatbots that raise and retain user activity in channels.
+2. Bots for performing services to users.
+
 ## Install
 
 ```bash

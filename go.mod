@@ -2,7 +2,7 @@ module github.com/Sagleft/uchatbot-engine
 
 go 1.18
 
-require github.com/Sagleft/utopialib-go v1.5.4
+require github.com/Sagleft/utopialib-go v1.5.5
 
 require (
 	github.com/ctengiz/evtwebsocket v0.0.0-20180717104640-fc3583982591 // indirect

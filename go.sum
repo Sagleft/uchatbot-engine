@@ -1,5 +1,5 @@
-github.com/Sagleft/utopialib-go v1.5.4 h1:JxOgA4IzYeIVDSJjb+4rg2KNMv1pOF6RQMN2CGAgKME=
-github.com/Sagleft/utopialib-go v1.5.4/go.mod h1:q7vYYHmin43t5xiXhbZqjRlCOYBVi5DqVSaM9+Fo9u0=
+github.com/Sagleft/utopialib-go v1.5.5 h1:BBhMhIasjEKrqOkA8ySs3HYzM8PiIV/bDpgdZ6fLTNI=
+github.com/Sagleft/utopialib-go v1.5.5/go.mod h1:q7vYYHmin43t5xiXhbZqjRlCOYBVi5DqVSaM9+Fo9u0=
 github.com/ctengiz/evtwebsocket v0.0.0-20180717104640-fc3583982591 h1:I+6x3CO8LDrWNe6r6L9y3n3dYXGcKO9BKhJ/dVUYcwc=
 github.com/ctengiz/evtwebsocket v0.0.0-20180717104640-fc3583982591/go.mod h1:lpk0rZYe7Oil/0fxAXpasQr7TGtHLSoFIYvk7QnpNEM=
 golang.org/x/net v0.0.0-20220526153639-5463443f8c37 h1:lUkvobShwKsOesNfWWlCS5q7fnbG1MEliIzwu886fn8=

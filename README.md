@@ -63,11 +63,11 @@ func OnContactMessage(m utopiago.InstantMessage) {
 	fmt.Println("[CONTACT] " + m.Nick + ": " + m.Text)
 }
 
-func OnChannelMessage(m utopiago.ChannelMessage) {
+func OnChannelMessage(m utopiago.WsChannelMessage) {
 	fmt.Println("[CHANNEL] " + m.Nick + ": " + m.Text)
 }
 
-func OnPrivateChannelMessage(m utopiago.ChannelMessage) {
+func OnPrivateChannelMessage(m utopiago.WsChannelMessage) {
 	fmt.Println("[PRIVATE] " + m.Nick + ": " + m.Text)
 }
 ```

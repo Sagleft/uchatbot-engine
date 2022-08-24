@@ -11,8 +11,8 @@ type ChatBot struct {
 
 type ChatBotCallbacks struct {
 	OnContactMessage        func(utopiago.InstantMessage)
-	OnChannelMessage        func(utopiago.ChannelMessage)
-	OnPrivateChannelMessage func(utopiago.ChannelMessage)
+	OnChannelMessage        func(utopiago.WsChannelMessage)
+	OnPrivateChannelMessage func(utopiago.WsChannelMessage)
 }
 
 type ChatBotData struct {

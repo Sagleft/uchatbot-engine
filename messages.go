@@ -6,11 +6,28 @@ import (
 
 func (c *ChatBot) initHandlers() error {
 	c.wsHandlers = map[string]wsHandler{
+		"newAuthorization":         c.onNewAuth,
 		"newInstantMessage":        c.onContactMessage,
 		"newChannelMessage":        c.onChannelMessage,
 		"newPrivateChannelMessage": c.onPrivateChannelMessage,
 	}
 	return nil
+}
+
+func (c *ChatBot) onNewAuth(event utopiago.WsEvent) {
+	// get pubkey
+	userPubkey, err := event.GetString("pk")
+	if err != nil {
+		c.onError(err)
+		return
+	}
+
+	// approve auth
+	_, err = c.data.Client.AcceptAuthRequest(userPubkey, "")
+	if err != nil {
+		c.onError(err)
+		return
+	}
 }
 
 func (c *ChatBot) onMessage(event utopiago.WsEvent) {

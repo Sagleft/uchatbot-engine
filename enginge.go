@@ -3,9 +3,11 @@ package uchatbot
 import (
 	"errors"
 	"log"
+	"time"
 
 	swissknife "github.com/Sagleft/swiss-knife"
 	utopiago "github.com/Sagleft/utopialib-go"
+	"github.com/beefsack/go-rate"
 )
 
 const (
@@ -108,7 +110,14 @@ func (c *ChatBot) setupMessageQueues() error {
 			c.data.BuffersCapacity.InstantMessages,
 		),
 	)
+	if c.data.RateLimiters.InstantMessages > 0 {
+		c.rateLimiters.InstantMessage = rateLimiter{
+			L:       rate.New(c.data.RateLimiters.InstantMessages, time.Second),
+			Enabled: true,
+		}
+	}
 	go c.queues.InstantMessages.Start()
+
 	return nil
 }
 

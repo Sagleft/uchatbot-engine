@@ -3,14 +3,25 @@ package uchatbot
 import (
 	swissknife "github.com/Sagleft/swiss-knife"
 	utopiago "github.com/Sagleft/utopialib-go"
+	"github.com/beefsack/go-rate"
 )
 
 type wsHandler func(event utopiago.WsEvent)
 
 type ChatBot struct {
-	data       ChatBotData
-	wsHandlers map[string]wsHandler
-	queues     eventBuffers
+	data         ChatBotData
+	wsHandlers   map[string]wsHandler
+	queues       eventBuffers
+	rateLimiters botRateLimiters
+}
+
+type botRateLimiters struct {
+	InstantMessage rateLimiter
+}
+
+type rateLimiter struct {
+	L       *rate.RateLimiter
+	Enabled bool
 }
 
 type eventBuffers struct {
@@ -45,6 +56,12 @@ type ChatBotData struct {
 	EnableWsSSL      bool                 `json:"enableSSL"` // SSL for websocket connection
 	ErrorCallback    func(err error)      `json:"-"`
 	BuffersCapacity  EventBuffersCapacity `json:"buffersCapacity"`
+	RateLimiters     EventBufferLimiters  `json:"rateLimiters"`
+}
+
+// for limit max events per second
+type EventBufferLimiters struct {
+	InstantMessages int `json:"instantMessages"`
 }
 
 type EventBuffersCapacity struct {

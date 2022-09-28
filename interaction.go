@@ -14,6 +14,10 @@ func (c *ChatBot) SetReadonly(channelID string, readOnly bool) error {
 // it works with queue (buffer).
 // returns message ID, error
 func (c *ChatBot) SendContactMessage(userPubkey string, msgText string) {
+	if c.rateLimiters.InstantMessage.Enabled {
+		c.rateLimiters.InstantMessage.L.Wait()
+	}
+
 	c.queues.InstantMessages.AddEvent(sendMessageTask{
 		UserPubkey:  userPubkey,
 		MessageText: msgText,

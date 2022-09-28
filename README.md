@@ -71,9 +71,3 @@ func OnPrivateChannelMessage(m utopiago.WsChannelMessage) {
 	fmt.Println("[PRIVATE] " + m.Nick + ": " + m.Text)
 }
 ```
-
-## Looking for a way around the API rate limits problem?
-
-You need an advanced bot that can synchronize the processing of messages from users in the queue.
-
-Write to me to buy it: F50AF5410B1F3F4297043F0E046F205BCBAA76BEC70E936EB0F3AB94BF316804

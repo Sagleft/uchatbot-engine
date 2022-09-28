@@ -37,7 +37,8 @@ func NewChatBot(data ChatBotData) (*ChatBot, error) {
 
 func (c *ChatBot) checkConnection() error {
 	if !c.data.Client.CheckClientConnection() {
-		return errors.New("failed to connect to Utopia Client")
+		return errors.New("failed to connect to Utopia Client at `" +
+			c.data.Client.Host + "`")
 	}
 	return nil
 }

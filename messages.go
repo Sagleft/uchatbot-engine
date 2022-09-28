@@ -4,6 +4,24 @@ import (
 	utopiago "github.com/Sagleft/utopialib-go"
 )
 
+/*
+                _                    _        _
+  __      _____| |__  ___  ___   ___| | _____| |_
+  \ \ /\ / / _ \ '_ \/ __|/ _ \ / __| |/ / _ \ __|
+   \ V  V /  __/ |_) \__ \ (_) | (__|   <  __/ |_
+    \_/\_/ \___|_.__/|___/\___/ \___|_|\_\___|\__|
+
+*/
+
+func (c *ChatBot) onMessage(event utopiago.WsEvent) {
+	handler, isEventTypeKown := c.wsHandlers[event.Type]
+	if !isEventTypeKown {
+		return
+	}
+
+	handler(event)
+}
+
 func (c *ChatBot) initHandlers() error {
 	c.wsHandlers = map[string]wsHandler{
 		"newAuthorization":         c.onNewAuth,
@@ -14,7 +32,26 @@ func (c *ChatBot) initHandlers() error {
 	return nil
 }
 
+/*
+               _   _
+    __ _ _   _| |_| |__
+   / _` | | | | __| '_ \
+  | (_| | |_| | |_| | | |
+   \__,_|\__,_|\__|_| |_|
+
+*/
+
 func (c *ChatBot) onNewAuth(event utopiago.WsEvent) {
+	c.queues.Auth.AddEvent(event)
+}
+
+func (c *ChatBot) handleAuthEvent(e interface{}) {
+	event, err := c.convertEventInterface(e, "auth")
+	if err != nil {
+		c.onError(err)
+		return
+	}
+
 	// get pubkey
 	userPubkey, err := event.GetString("pk")
 	if err != nil {
@@ -30,16 +67,14 @@ func (c *ChatBot) onNewAuth(event utopiago.WsEvent) {
 	}
 }
 
-func (c *ChatBot) onMessage(event utopiago.WsEvent) {
-	handler, isEventTypeKown := c.wsHandlers[event.Type]
-	if !isEventTypeKown {
-		return
-	}
-
-	handler(event)
-}
-
-/*{
+/*
+                   _             _
+    ___ ___  _ __ | |_ __ _  ___| |_    _ __ ___  ___  __ _
+   / __/ _ \| '_ \| __/ _` |/ __| __|  | '_ ` _ \/ __|/ _` |
+  | (_| (_) | | | | || (_| | (__| |_   | | | | | \__ \ (_| |
+   \___\___/|_| |_|\__\__,_|\___|\__|  |_| |_| |_|___/\__, |
+                                                      |___/
+{
 	"type": "newInstantMessage",
 	"data": {
 		"dateTime": "2022-08-02T18:54:14.437Z",
@@ -55,7 +90,18 @@ func (c *ChatBot) onMessage(event utopiago.WsEvent) {
 		"text": "test"
 	}
 }*/
+
 func (c *ChatBot) onContactMessage(event utopiago.WsEvent) {
+	c.queues.Contact.AddEvent(event)
+}
+
+func (c *ChatBot) handleContactMessage(e interface{}) {
+	event, err := c.convertEventInterface(e, "contact message")
+	if err != nil {
+		c.onError(err)
+		return
+	}
+
 	message, err := event.GetInstantMessage()
 	if err != nil {
 		c.onError(err)
@@ -65,7 +111,15 @@ func (c *ChatBot) onContactMessage(event utopiago.WsEvent) {
 	c.data.Callbacks.OnContactMessage(message)
 }
 
-/*{
+/*
+        _                            _
+    ___| |__   __ _ _ __  _ __   ___| |   _ __ ___  ___  __ _
+   / __| '_ \ / _` | '_ \| '_ \ / _ \ |  | '_ ` _ \/ __|/ _` |
+  | (__| | | | (_| | | | | | | |  __/ |  | | | | | \__ \ (_| |
+   \___|_| |_|\__,_|_| |_|_| |_|\___|_|  |_| |_| |_|___/\__, |
+                                                        |___/
+
+{
 	"type": "newChannelMessage",
 	"data": {
 		"channel": "bot playground",
@@ -81,7 +135,18 @@ func (c *ChatBot) onContactMessage(event utopiago.WsEvent) {
 		"topicId": "4118503780692390786"
 	}
 }*/
+
 func (c *ChatBot) onChannelMessage(event utopiago.WsEvent) {
+	c.queues.ChannelLobby.AddEvent(event)
+}
+
+func (c *ChatBot) handleChannelLobbyMessage(e interface{}) {
+	event, err := c.convertEventInterface(e, "channel message")
+	if err != nil {
+		c.onError(err)
+		return
+	}
+
 	message, err := event.GetChannelMessage()
 	if err != nil {
 		c.onError(err)
@@ -91,7 +156,15 @@ func (c *ChatBot) onChannelMessage(event utopiago.WsEvent) {
 	c.data.Callbacks.OnChannelMessage(message)
 }
 
-/*{
+/*
+        _                            _               _
+    ___| |__   __ _ _ __  _ __   ___| |   _ __  _ __(_)_   __   _ __ ___  ___  __ _
+   / __| '_ \ / _` | '_ \| '_ \ / _ \ |  | '_ \| '__| \ \ / /  | '_ ` _ \/ __|/ _` |
+  | (__| | | | (_| | | | | | | |  __/ |  | |_) | |  | |\ V /   | | | | | \__ \ (_| |
+   \___|_| |_|\__,_|_| |_|_| |_|\___|_|  | .__/|_|  |_| \_/    |_| |_| |_|___/\__, |
+                                         |_|                                  |___/
+
+{
 	"type": "newPrivateChannelMessage",
 	"data": {
 		"channel": "bot playground",
@@ -107,7 +180,18 @@ func (c *ChatBot) onChannelMessage(event utopiago.WsEvent) {
 		"topicId": "2679238831019856860"
 	}
 }*/
+
 func (c *ChatBot) onPrivateChannelMessage(event utopiago.WsEvent) {
+	c.queues.PrivateChannelLobby.AddEvent(event)
+}
+
+func (c *ChatBot) handlePrivateChannelLobbyMessage(e interface{}) {
+	event, err := c.convertEventInterface(e, "private channel message")
+	if err != nil {
+		c.onError(err)
+		return
+	}
+
 	message, err := event.GetChannelMessage()
 	if err != nil {
 		c.onError(err)

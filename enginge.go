@@ -4,7 +4,12 @@ import (
 	"errors"
 	"log"
 
+	swissknife "github.com/Sagleft/swiss-knife"
 	utopiago "github.com/Sagleft/utopialib-go"
+)
+
+const (
+	defaultBufferCapacity = 150 // events
 )
 
 // NewChatBot - create new chatbot and connect to Utopia.
@@ -24,6 +29,7 @@ func NewChatBot(data ChatBotData) (*ChatBot, error) {
 	return cb, checkErrors(
 		cb.checkConnection,
 		cb.joinChannels,
+		cb.setupMessageQueues,
 		cb.initHandlers,
 		cb.subscribe,
 	)
@@ -47,6 +53,45 @@ func (c *ChatBot) joinChannels() error {
 			return errors.New("failed to join in " + chat.ID)
 		}
 	}
+	return nil
+}
+
+func (c *ChatBot) setupMessageQueues() error {
+	c.queues.Auth = swissknife.NewChannelWorker(
+		c.handleAuthEvent,
+		ternaryInt(
+			c.data.BuffersCapacity.Auth == 0,
+			defaultBufferCapacity,
+			c.data.BuffersCapacity.Auth,
+		),
+	)
+
+	c.queues.Contact = swissknife.NewChannelWorker(
+		c.handleContactMessage,
+		ternaryInt(
+			c.data.BuffersCapacity.ContactMessage == 0,
+			defaultBufferCapacity,
+			c.data.BuffersCapacity.ContactMessage,
+		),
+	)
+
+	c.queues.ChannelLobby = swissknife.NewChannelWorker(
+		c.handleChannelLobbyMessage,
+		ternaryInt(
+			c.data.BuffersCapacity.ChannelMessage == 0,
+			defaultBufferCapacity,
+			c.data.BuffersCapacity.ChannelMessage,
+		),
+	)
+
+	c.queues.PrivateChannelLobby = swissknife.NewChannelWorker(
+		c.handlePrivateChannelLobbyMessage,
+		ternaryInt(
+			c.data.BuffersCapacity.PrivateChannelMessage == 0,
+			defaultBufferCapacity,
+			c.data.BuffersCapacity.PrivateChannelMessage,
+		),
+	)
 	return nil
 }
 

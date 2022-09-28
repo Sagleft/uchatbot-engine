@@ -43,6 +43,8 @@ func main() {
 	})
 	if err != nil {
 		log.Fatalln(err)
+	} else {
+		log.Println("connected")
 	}
 
 	wait()

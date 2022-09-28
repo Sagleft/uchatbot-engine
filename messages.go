@@ -67,10 +67,10 @@ func (c *ChatBot) handleAuthEvent(e interface{}) {
 	}
 
 	// send welcome message
-	c.sendWelcomeMessage(userPubkey)
+	c.SendWelcomeMessage(userPubkey)
 }
 
-func (c *ChatBot) sendWelcomeMessage(userPubkey string) {
+func (c *ChatBot) SendWelcomeMessage(userPubkey string) {
 	if c.data.Callbacks.WelcomeMessage == nil {
 		return // callback is not set
 	}

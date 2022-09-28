@@ -65,6 +65,7 @@ func (c *ChatBot) setupMessageQueues() error {
 			c.data.BuffersCapacity.Auth,
 		),
 	)
+	go c.queues.Auth.Start()
 
 	c.queues.Contact = swissknife.NewChannelWorker(
 		c.handleContactMessage,
@@ -74,6 +75,7 @@ func (c *ChatBot) setupMessageQueues() error {
 			c.data.BuffersCapacity.ContactMessage,
 		),
 	)
+	go c.queues.Contact.Start()
 
 	c.queues.ChannelLobby = swissknife.NewChannelWorker(
 		c.handleChannelLobbyMessage,
@@ -83,6 +85,7 @@ func (c *ChatBot) setupMessageQueues() error {
 			c.data.BuffersCapacity.ChannelMessage,
 		),
 	)
+	go c.queues.ChannelLobby.Start()
 
 	c.queues.PrivateChannelLobby = swissknife.NewChannelWorker(
 		c.handlePrivateChannelLobbyMessage,
@@ -92,6 +95,7 @@ func (c *ChatBot) setupMessageQueues() error {
 			c.data.BuffersCapacity.PrivateChannelMessage,
 		),
 	)
+	go c.queues.PrivateChannelLobby.Start()
 	return nil
 }
 

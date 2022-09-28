@@ -67,6 +67,10 @@ func (c *ChatBot) handleAuthEvent(e interface{}) {
 	}
 
 	// send welcome message
+	c.sendWelcomeMessage(userPubkey)
+}
+
+func (c *ChatBot) sendWelcomeMessage(userPubkey string) {
 	if c.data.Callbacks.WelcomeMessage == nil {
 		return // callback is not set
 	}

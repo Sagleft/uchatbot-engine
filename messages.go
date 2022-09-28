@@ -72,10 +72,7 @@ func (c *ChatBot) handleAuthEvent(e interface{}) {
 	}
 
 	msgText := c.data.Callbacks.WelcomeMessage(userPubkey)
-	_, err = c.data.Client.SendInstantMessage(userPubkey, msgText)
-	if err != nil {
-		c.onError(err)
-	}
+	c.SendContactMessage(userPubkey, msgText)
 }
 
 /*

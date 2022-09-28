@@ -57,6 +57,7 @@ func (c *ChatBot) joinChannels() error {
 }
 
 func (c *ChatBot) setupMessageQueues() error {
+	// RECEIVERS
 	c.queues.Auth = swissknife.NewChannelWorker(
 		c.handleAuthEvent,
 		ternaryInt(
@@ -96,6 +97,17 @@ func (c *ChatBot) setupMessageQueues() error {
 		),
 	)
 	go c.queues.PrivateChannelLobby.Start()
+
+	// SENDERS
+	c.queues.InstantMessages = swissknife.NewChannelWorker(
+		c.handleSendInstantMessageTask,
+		ternaryInt(
+			c.data.BuffersCapacity.InstantMessages == 0,
+			defaultBufferCapacity,
+			c.data.BuffersCapacity.InstantMessages,
+		),
+	)
+	go c.queues.InstantMessages.Start()
 	return nil
 }
 

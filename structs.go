@@ -14,10 +14,14 @@ type ChatBot struct {
 }
 
 type eventBuffers struct {
+	// receivers
 	Auth                *swissknife.ChannelWorker
 	Contact             *swissknife.ChannelWorker
 	ChannelLobby        *swissknife.ChannelWorker
 	PrivateChannelLobby *swissknife.ChannelWorker
+
+	// senders
+	InstantMessages *swissknife.ChannelWorker
 }
 
 type ChatBotCallbacks struct {
@@ -48,6 +52,7 @@ type EventBuffersCapacity struct {
 	ContactMessage        int `json:"contactMessage"`
 	ChannelMessage        int `json:"channelMessage"`
 	PrivateChannelMessage int `json:"privateChannelMessage"`
+	InstantMessages       int `json:"instantMessages"`
 }
 
 type Chat struct {

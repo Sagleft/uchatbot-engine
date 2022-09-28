@@ -65,6 +65,17 @@ func (c *ChatBot) handleAuthEvent(e interface{}) {
 		c.onError(err)
 		return
 	}
+
+	// send welcome message
+	if c.data.Callbacks.WelcomeMessage == nil {
+		return // callback is not set
+	}
+
+	msgText := c.data.Callbacks.WelcomeMessage(userPubkey)
+	_, err = c.data.Client.SendInstantMessage(userPubkey, msgText)
+	if err != nil {
+		c.onError(err)
+	}
 }
 
 /*

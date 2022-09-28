@@ -21,9 +21,13 @@ type eventBuffers struct {
 }
 
 type ChatBotCallbacks struct {
+	// required
 	OnContactMessage        func(utopiago.InstantMessage)
 	OnChannelMessage        func(utopiago.WsChannelMessage)
 	OnPrivateChannelMessage func(utopiago.WsChannelMessage)
+
+	// optional
+	WelcomeMessage func(userPubkey string) string
 }
 
 type ChatBotData struct {

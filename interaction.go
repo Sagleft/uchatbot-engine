@@ -75,3 +75,24 @@ func (c *ChatBot) handleSendPrivateChannelMessageTask(e interface{}) {
 		c.onError(errors.New("failed to send channel private message: " + err.Error()))
 	}
 }
+
+// GetOwnPubkey - get account public key
+func (c *ChatBot) GetOwnPubkey() (string, error) {
+	data, err := c.data.Client.GetOwnContact()
+	if err != nil {
+		return "", err
+	}
+
+	pubkeyRaw, isExists := data["pk"]
+	if !isExists {
+		return "", errors.New("pubkey not found in response")
+	}
+
+	pubkey, isConvertable := pubkeyRaw.(string)
+	if !isConvertable {
+		return "", errors.New("failed to convert pubkey to stirng: " +
+			reflect.ValueOf(pubkeyRaw).String() + " received")
+	}
+
+	return pubkey, nil
+}

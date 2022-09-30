@@ -11,9 +11,9 @@ type sendMessageTask struct {
 }
 
 type sendChannelPrivateMessageTask struct {
-	ChannelID   string
-	UserPubkey  string
-	MessageText string
+	ChannelID      string
+	UserPubkeyHash string
+	MessageText    string
 }
 
 // SetReadonly - enable or disable channel readonly mode
@@ -50,15 +50,15 @@ func (c *ChatBot) handleSendInstantMessageTask(e interface{}) {
 
 // SendChannelPrivateMessage - send message to contact in channel (in private chat).
 // it works with queue (buffer)
-func (c *ChatBot) SendChannelPrivateMessage(channel, userPubkey, msgText string) {
+func (c *ChatBot) SendChannelPrivateMessage(channel, userPubkeyHash, msgText string) {
 	if c.rateLimiters.ChannelPrivateMessage.Enabled {
 		c.rateLimiters.ChannelPrivateMessage.L.Wait()
 	}
 
 	c.queues.SendPrivateChannelMessage.AddEvent(sendChannelPrivateMessageTask{
-		ChannelID:   channel,
-		UserPubkey:  userPubkey,
-		MessageText: msgText,
+		ChannelID:      channel,
+		UserPubkeyHash: userPubkeyHash,
+		MessageText:    msgText,
 	})
 }
 
@@ -70,7 +70,7 @@ func (c *ChatBot) handleSendPrivateChannelMessageTask(e interface{}) {
 		return
 	}
 
-	_, err := c.data.Client.SendChannelContactMessage(event.ChannelID, event.UserPubkey, event.MessageText)
+	_, err := c.data.Client.SendChannelContactMessage(event.ChannelID, event.UserPubkeyHash, event.MessageText)
 	if err != nil {
 		c.onError(errors.New("failed to send channel private message: " + err.Error()))
 	}

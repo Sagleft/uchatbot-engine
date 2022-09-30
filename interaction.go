@@ -83,16 +83,5 @@ func (c *ChatBot) GetOwnPubkey() (string, error) {
 		return "", err
 	}
 
-	pubkeyRaw, isExists := data["pk"]
-	if !isExists {
-		return "", errors.New("pubkey not found in response")
-	}
-
-	pubkey, isConvertable := pubkeyRaw.(string)
-	if !isConvertable {
-		return "", errors.New("failed to convert pubkey to stirng: " +
-			reflect.ValueOf(pubkeyRaw).String() + " received")
-	}
-
-	return pubkey, nil
+	return data.Pubkey, nil
 }

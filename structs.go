@@ -16,7 +16,8 @@ type ChatBot struct {
 }
 
 type botRateLimiters struct {
-	InstantMessage rateLimiter
+	InstantMessage        rateLimiter
+	ChannelPrivateMessage rateLimiter
 }
 
 type rateLimiter struct {
@@ -32,7 +33,8 @@ type eventBuffers struct {
 	PrivateChannelLobby *swissknife.ChannelWorker
 
 	// senders
-	InstantMessages *swissknife.ChannelWorker
+	InstantMessages           *swissknife.ChannelWorker
+	SendPrivateChannelMessage *swissknife.ChannelWorker
 }
 
 type ChatBotCallbacks struct {
@@ -61,7 +63,8 @@ type ChatBotData struct {
 
 // for limit max events per second
 type EventBufferLimiters struct {
-	InstantMessages int `json:"instantMessages"`
+	InstantMessages        int `json:"instantMessages"`
+	ChannelPrivateMessages int `json:"channelPrivateMessages"`
 }
 
 type EventBuffersCapacity struct {

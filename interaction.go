@@ -5,14 +5,24 @@ import (
 	"reflect"
 )
 
+type sendMessageTask struct {
+	UserPubkey  string
+	MessageText string
+}
+
+type sendChannelPrivateMessageTask struct {
+	ChannelID   string
+	UserPubkey  string
+	MessageText string
+}
+
 // SetReadonly - enable or disable channel readonly mode
 func (c *ChatBot) SetReadonly(channelID string, readOnly bool) error {
 	return c.data.Client.EnableReadOnly(channelID, readOnly)
 }
 
 // SendContactMessage - send message to contact.
-// it works with queue (buffer).
-// returns message ID, error
+// it works with queue (buffer)
 func (c *ChatBot) SendContactMessage(userPubkey string, msgText string) {
 	if c.rateLimiters.InstantMessage.Enabled {
 		c.rateLimiters.InstantMessage.L.Wait()
@@ -22,11 +32,6 @@ func (c *ChatBot) SendContactMessage(userPubkey string, msgText string) {
 		UserPubkey:  userPubkey,
 		MessageText: msgText,
 	})
-}
-
-type sendMessageTask struct {
-	UserPubkey  string
-	MessageText string
 }
 
 func (c *ChatBot) handleSendInstantMessageTask(e interface{}) {
@@ -40,5 +45,33 @@ func (c *ChatBot) handleSendInstantMessageTask(e interface{}) {
 	_, err := c.data.Client.SendInstantMessage(event.UserPubkey, event.MessageText)
 	if err != nil {
 		c.onError(errors.New("failed to send instant message: " + err.Error()))
+	}
+}
+
+// SendChannelPrivateMessage - send message to contact in channel (in private chat).
+// it works with queue (buffer)
+func (c *ChatBot) SendChannelPrivateMessage(channel, userPubkey, msgText string) {
+	if c.rateLimiters.ChannelPrivateMessage.Enabled {
+		c.rateLimiters.ChannelPrivateMessage.L.Wait()
+	}
+
+	c.queues.SendPrivateChannelMessage.AddEvent(sendChannelPrivateMessageTask{
+		ChannelID:   channel,
+		UserPubkey:  userPubkey,
+		MessageText: msgText,
+	})
+}
+
+func (c *ChatBot) handleSendPrivateChannelMessageTask(e interface{}) {
+	event, isConvertable := e.(sendChannelPrivateMessageTask)
+	if !isConvertable {
+		c.onError(errors.New("failed to convert send private channel message task: " +
+			reflect.ValueOf(e).String() + " type received"))
+		return
+	}
+
+	_, err := c.data.Client.SendChannelContactMessage(event.ChannelID, event.UserPubkey, event.MessageText)
+	if err != nil {
+		c.onError(errors.New("failed to send channel private message: " + err.Error()))
 	}
 }

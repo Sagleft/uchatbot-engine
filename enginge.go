@@ -118,6 +118,21 @@ func (c *ChatBot) setupMessageQueues() error {
 	}
 	go c.queues.InstantMessages.Start()
 
+	c.queues.SendPrivateChannelMessage = swissknife.NewChannelWorker(
+		c.handleSendPrivateChannelMessageTask,
+		ternaryInt(
+			c.data.BuffersCapacity.PrivateChannelMessage == 0,
+			defaultBufferCapacity,
+			c.data.BuffersCapacity.PrivateChannelMessage,
+		),
+	)
+	if c.data.RateLimiters.ChannelPrivateMessages > 0 {
+		c.rateLimiters.InstantMessage = rateLimiter{
+			L:       rate.New(c.data.RateLimiters.ChannelPrivateMessages, time.Second),
+			Enabled: true,
+		}
+	}
+	go c.queues.SendPrivateChannelMessage.Start()
 	return nil
 }
 

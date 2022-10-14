@@ -177,6 +177,14 @@ func (c *ChatBot) onError(err error) {
 		return
 	}
 
+	if strings.Contains(err.Error(), "reset by peer") {
+		if c.data.UseReconnectCallback {
+			c.data.Callbacks.ReconnectCallback()
+		} else {
+			log.Println("ERROR: " + err.Error())
+		}
+	}
+
 	if c.data.UseErrorCallback {
 		c.data.ErrorCallback(err)
 	} else {

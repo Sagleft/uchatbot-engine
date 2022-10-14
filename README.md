@@ -12,9 +12,8 @@ The engine can:
 3. automatically logs into channels, can use the password for closed channels.
 
 Planned features:
-1. automatically accept authorization requests;
-2. send welcome messages.
-3. processing payments.
+ - [ ] send welcome messages;
+ - [ ] processing payments.
 
 ## Using the engine
 

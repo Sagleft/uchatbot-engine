@@ -3,6 +3,7 @@ package uchatbot
 import (
 	"errors"
 	"log"
+	"strings"
 	"time"
 
 	swissknife "github.com/Sagleft/swiss-knife"
@@ -150,12 +151,26 @@ func (c *ChatBot) subscribe() error {
 	return c.data.Client.WsSubscribe(utopiago.WsSubscribeTask{
 		OnConnected: c.onConnected,
 		Callback:    c.onMessage,
-		ErrCallback: c.onError,
+		ErrCallback: c.onWsError,
 		Port:        c.data.Client.WsPort,
 	})
 }
 
 func (c *ChatBot) onConnected() {}
+
+func (c *ChatBot) onWsError(err error) {
+	if err == nil {
+		return
+	}
+
+	if strings.Contains(err.Error(), "EOF") {
+		if c.data.UseReconnectCallback {
+			c.data.Callbacks.ReconnectCallback()
+		}
+	} else {
+		c.onError(err)
+	}
+}
 
 func (c *ChatBot) onError(err error) {
 	if err == nil {

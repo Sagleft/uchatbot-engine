@@ -14,6 +14,7 @@ The engine can:
 Planned features:
  - [ ] send welcome messages;
  - [ ] processing payments.
+ - [ ] the ability to set the type of alerts you want to subscribe to.
 
 ## Using the engine
 

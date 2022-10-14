@@ -44,8 +44,7 @@ type ChatBotCallbacks struct {
 	OnPrivateChannelMessage func(utopiago.WsChannelMessage)
 
 	// optional
-	WelcomeMessage    func(userPubkey string) string
-	ReconnectCallback func()
+	WelcomeMessage func(userPubkey string) string
 }
 
 type ChatBotData struct {
@@ -55,12 +54,11 @@ type ChatBotData struct {
 	Callbacks ChatBotCallbacks
 
 	// optional
-	UseErrorCallback     bool                 `json:"useErrorCallback"`
-	UseReconnectCallback bool                 `json:"useReconnectCallback"`
-	EnableWsSSL          bool                 `json:"enableSSL"` // SSL for websocket connection
-	ErrorCallback        func(err error)      `json:"-"`
-	BuffersCapacity      EventBuffersCapacity `json:"buffersCapacity"`
-	RateLimiters         EventBufferLimiters  `json:"rateLimiters"`
+	UseErrorCallback bool                 `json:"useErrorCallback"`
+	EnableWsSSL      bool                 `json:"enableSSL"` // SSL for websocket connection
+	ErrorCallback    func(err error)      `json:"-"`
+	BuffersCapacity  EventBuffersCapacity `json:"buffersCapacity"`
+	RateLimiters     EventBufferLimiters  `json:"rateLimiters"`
 }
 
 // for limit max events per second

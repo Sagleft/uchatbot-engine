@@ -13,6 +13,7 @@ import (
 
 const (
 	defaultBufferCapacity = 150 // events
+	wsReconnectTimeout    = 5 * time.Second
 )
 
 // NewChatBot - create new chatbot and connect to Utopia.
@@ -164,9 +165,16 @@ func (c *ChatBot) onWsError(err error) {
 	}
 
 	if strings.Contains(err.Error(), "EOF") {
-		if c.data.UseReconnectCallback {
-			c.data.Callbacks.ReconnectCallback()
+
+		c.onError(errors.New("websocket connection closed. attempt to reconnect"))
+
+		for {
+			if err := c.subscribe(); err == nil {
+				return
+			}
+			time.Sleep(wsReconnectTimeout)
 		}
+
 	} else {
 		c.onError(err)
 	}
@@ -175,15 +183,6 @@ func (c *ChatBot) onWsError(err error) {
 func (c *ChatBot) onError(err error) {
 	if err == nil {
 		return
-	}
-
-	if strings.Contains(err.Error(), "reset by peer") {
-		if c.data.UseReconnectCallback {
-			c.data.Callbacks.ReconnectCallback()
-			return
-		} else {
-			log.Println("ERROR: " + err.Error())
-		}
 	}
 
 	if c.data.UseErrorCallback {

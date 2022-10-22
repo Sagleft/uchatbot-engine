@@ -153,7 +153,6 @@ func (c *ChatBot) subscribe() error {
 		OnConnected: c.onConnected,
 		Callback:    c.onMessage,
 		ErrCallback: c.onWsError,
-		Port:        c.data.Client.WsPort,
 	})
 }
 

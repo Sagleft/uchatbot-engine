@@ -57,9 +57,10 @@ type ChatBotData struct {
 	Notifications    string               `json:"notifications"` // by default: all
 	UseErrorCallback bool                 `json:"useErrorCallback"`
 	EnableWsSSL      bool                 `json:"enableSSL"` // SSL for websocket connection
-	ErrorCallback    func(err error)      `json:"-"`
 	BuffersCapacity  EventBuffersCapacity `json:"buffersCapacity"`
 	RateLimiters     EventBufferLimiters  `json:"rateLimiters"`
+
+	ErrorCallback func(err error) `json:"-"`
 }
 
 // for limit max events per second

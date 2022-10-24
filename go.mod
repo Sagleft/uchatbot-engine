@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/Sagleft/swiss-knife v1.0.8
-	github.com/Sagleft/utopialib-go v1.9.3
+	github.com/Sagleft/utopialib-go v1.9.4
 	github.com/beefsack/go-rate v0.0.0-20220214233405-116f4ca011a0
 )
 

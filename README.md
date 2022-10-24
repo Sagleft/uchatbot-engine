@@ -11,11 +11,6 @@ The engine can:
 2. process messages in channels (private & public messages);
 3. automatically logs into channels, can use the password for closed channels.
 
-Planned features:
- - [ ] send welcome messages;
- - [ ] processing payments.
- - [ ] the ability to set the type of alerts you want to subscribe to.
-
 ## Using the engine
 
 1. Chatbots that raise and retain user activity in channels.

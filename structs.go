@@ -54,6 +54,7 @@ type ChatBotData struct {
 	Callbacks ChatBotCallbacks
 
 	// optional
+	Notifications    string               `json:"notifications"` // by default: all
 	UseErrorCallback bool                 `json:"useErrorCallback"`
 	EnableWsSSL      bool                 `json:"enableSSL"` // SSL for websocket connection
 	ErrorCallback    func(err error)      `json:"-"`

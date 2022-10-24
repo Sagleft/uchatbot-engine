@@ -139,11 +139,15 @@ func (c *ChatBot) setupMessageQueues() error {
 }
 
 func (c *ChatBot) subscribe() error {
+	if c.data.Notifications == "" {
+		c.data.Notifications = "all"
+	}
+
 	err := c.data.Client.SetWebSocketState(utopiago.SetWsStateTask{
 		Enabled:       true,
 		Port:          c.data.Client.WsPort,
 		EnableSSL:     c.data.EnableWsSSL,
-		Notifications: "all",
+		Notifications: c.data.Notifications,
 	})
 	if err != nil {
 		return err

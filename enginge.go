@@ -29,6 +29,7 @@ func NewChatBot(data ChatBotData) (*ChatBot, error) {
 	// create bot
 	cb := &ChatBot{
 		data:       data,
+		client:     utopiago.NewUtopiaClient(data.Config),
 		wsHandlers: make(map[string]wsHandler),
 	}
 
@@ -144,8 +145,6 @@ func (c *ChatBot) subscribe() error {
 	if c.data.Notifications == "" {
 		c.data.Notifications = "all"
 	}
-
-	c.client = utopiago.NewUtopiaClient(c.data.Config)
 
 	err := c.client.SetWebSocketState(structs.SetWsStateTask{
 		Enabled:       true,

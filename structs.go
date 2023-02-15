@@ -2,13 +2,17 @@ package uchatbot
 
 import (
 	swissknife "github.com/Sagleft/swiss-knife"
-	utopiago "github.com/Sagleft/utopialib-go"
+	utopiago "github.com/Sagleft/utopialib-go/v2"
+	"github.com/Sagleft/utopialib-go/v2/pkg/structs"
+	"github.com/Sagleft/utopialib-go/v2/pkg/websocket"
 	"github.com/beefsack/go-rate"
 )
 
-type wsHandler func(event utopiago.WsEvent)
+type wsHandler func(event websocket.WsEvent)
 
 type ChatBot struct {
+	client utopiago.Client
+
 	data         ChatBotData
 	wsHandlers   map[string]wsHandler
 	queues       eventBuffers
@@ -39,9 +43,9 @@ type eventBuffers struct {
 
 type ChatBotCallbacks struct {
 	// required
-	OnContactMessage        func(utopiago.InstantMessage)
-	OnChannelMessage        func(utopiago.WsChannelMessage)
-	OnPrivateChannelMessage func(utopiago.WsChannelMessage)
+	OnContactMessage        func(structs.InstantMessage)
+	OnChannelMessage        func(structs.WsChannelMessage)
+	OnPrivateChannelMessage func(structs.WsChannelMessage)
 
 	// optional
 	WelcomeMessage func(userPubkey string) string
@@ -49,8 +53,8 @@ type ChatBotCallbacks struct {
 
 type ChatBotData struct {
 	// required
-	Client    *utopiago.UtopiaClient `json:"client"`
-	Chats     []Chat                 `json:"chats"` // channel ids
+	Config    utopiago.Config `json:"client"`
+	Chats     []Chat          `json:"chats"` // channel ids
 	Callbacks ChatBotCallbacks
 
 	// optional

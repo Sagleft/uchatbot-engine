@@ -7,7 +7,9 @@ import (
 	"time"
 
 	swissknife "github.com/Sagleft/swiss-knife"
-	utopiago "github.com/Sagleft/utopialib-go"
+	utopiago "github.com/Sagleft/utopialib-go/v2"
+	"github.com/Sagleft/utopialib-go/v2/pkg/structs"
+	"github.com/Sagleft/utopialib-go/v2/pkg/websocket"
 	"github.com/beefsack/go-rate"
 )
 
@@ -20,7 +22,7 @@ const (
 // the bot will try to join the list of the specified chats and subscribe to messages
 func NewChatBot(data ChatBotData) (*ChatBot, error) {
 	// check data
-	if data.Client.WsPort == 0 {
+	if data.Config.WsPort == 0 {
 		return nil, errors.New("ws port is not set")
 	}
 
@@ -40,16 +42,16 @@ func NewChatBot(data ChatBotData) (*ChatBot, error) {
 }
 
 func (c *ChatBot) checkConnection() error {
-	if !c.data.Client.CheckClientConnection() {
+	if !c.client.CheckClientConnection() {
 		return errors.New("failed to connect to Utopia Client at `" +
-			c.data.Client.Host + "`")
+			c.data.Config.Host + "`")
 	}
 	return nil
 }
 
 func (c *ChatBot) joinChannels() error {
 	for _, chat := range c.data.Chats {
-		isJoined, err := c.data.Client.JoinChannel(chat.ID, chat.Password)
+		isJoined, err := c.client.JoinChannel(chat.ID, chat.Password)
 		if err != nil {
 			return err
 		}
@@ -143,9 +145,11 @@ func (c *ChatBot) subscribe() error {
 		c.data.Notifications = "all"
 	}
 
-	err := c.data.Client.SetWebSocketState(utopiago.SetWsStateTask{
+	c.client = utopiago.NewUtopiaClient(c.data.Config)
+
+	err := c.client.SetWebSocketState(structs.SetWsStateTask{
 		Enabled:       true,
-		Port:          c.data.Client.WsPort,
+		Port:          c.data.Config.WsPort,
 		EnableSSL:     c.data.EnableWsSSL,
 		Notifications: c.data.Notifications,
 	})
@@ -153,7 +157,7 @@ func (c *ChatBot) subscribe() error {
 		return err
 	}
 
-	return c.data.Client.WsSubscribe(utopiago.WsSubscribeTask{
+	return c.client.WsSubscribe(websocket.WsSubscribeTask{
 		OnConnected: c.onConnected,
 		Callback:    c.onMessage,
 		ErrCallback: c.onWsError,

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"reflect"
 
-	utopiago "github.com/Sagleft/utopialib-go"
+	"github.com/Sagleft/utopialib-go/v2/pkg/websocket"
 )
 
 type errorFunc func() error
@@ -19,11 +19,11 @@ func checkErrors(errChecks ...errorFunc) error {
 	return nil
 }
 
-func (c *ChatBot) convertEventInterface(e interface{}, eventType string) (utopiago.WsEvent, error) {
+func (c *ChatBot) convertEventInterface(e interface{}, eventType string) (websocket.WsEvent, error) {
 	// convert event interface
-	event, isConvertable := e.(utopiago.WsEvent)
+	event, isConvertable := e.(websocket.WsEvent)
 	if !isConvertable {
-		return utopiago.WsEvent{}, errors.New("failed to convert " + eventType + " event interface. " +
+		return websocket.WsEvent{}, errors.New("failed to convert " + eventType + " event interface. " +
 			reflect.ValueOf(e).String() + " type received")
 	}
 	return event, nil

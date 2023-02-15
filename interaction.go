@@ -18,7 +18,7 @@ type sendChannelPrivateMessageTask struct {
 
 // SetReadonly - enable or disable channel readonly mode
 func (c *ChatBot) SetReadonly(channelID string, readOnly bool) error {
-	return c.data.Client.EnableReadOnly(channelID, readOnly)
+	return c.client.EnableReadOnly(channelID, readOnly)
 }
 
 // SendContactMessage - send message to contact.
@@ -42,7 +42,7 @@ func (c *ChatBot) handleSendInstantMessageTask(e interface{}) {
 		return
 	}
 
-	_, err := c.data.Client.SendInstantMessage(event.UserPubkey, event.MessageText)
+	_, err := c.client.SendInstantMessage(event.UserPubkey, event.MessageText)
 	if err != nil {
 		c.onError(errors.New("failed to send instant message: " + err.Error()))
 	}
@@ -70,7 +70,7 @@ func (c *ChatBot) handleSendPrivateChannelMessageTask(e interface{}) {
 		return
 	}
 
-	_, err := c.data.Client.SendChannelContactMessage(event.ChannelID, event.UserPubkeyHash, event.MessageText)
+	_, err := c.client.SendChannelContactMessage(event.ChannelID, event.UserPubkeyHash, event.MessageText)
 	if err != nil {
 		c.onError(errors.New("failed to send channel private message: " + err.Error()))
 	}
@@ -78,7 +78,7 @@ func (c *ChatBot) handleSendPrivateChannelMessageTask(e interface{}) {
 
 // GetOwnPubkey - get account public key
 func (c *ChatBot) GetOwnPubkey() (string, error) {
-	data, err := c.data.Client.GetOwnContact()
+	data, err := c.client.GetOwnContact()
 	if err != nil {
 		return "", err
 	}

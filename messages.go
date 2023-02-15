@@ -1,7 +1,8 @@
 package uchatbot
 
 import (
-	utopiago "github.com/Sagleft/utopialib-go"
+	"github.com/Sagleft/utopialib-go/v2/pkg/helpers"
+	"github.com/Sagleft/utopialib-go/v2/pkg/websocket"
 )
 
 /*
@@ -13,7 +14,7 @@ import (
 
 */
 
-func (c *ChatBot) onMessage(event utopiago.WsEvent) {
+func (c *ChatBot) onMessage(event websocket.WsEvent) {
 	handler, isEventTypeKown := c.wsHandlers[event.Type]
 	if !isEventTypeKown {
 		return
@@ -41,7 +42,7 @@ func (c *ChatBot) initHandlers() error {
 
 */
 
-func (c *ChatBot) onNewAuth(event utopiago.WsEvent) {
+func (c *ChatBot) onNewAuth(event websocket.WsEvent) {
 	c.queues.Auth.AddEvent(event)
 }
 
@@ -60,7 +61,7 @@ func (c *ChatBot) handleAuthEvent(e interface{}) {
 	}
 
 	// approve auth
-	_, err = c.data.Client.AcceptAuthRequest(userPubkey, "")
+	_, err = c.client.AcceptAuthRequest(userPubkey, "")
 	if err != nil {
 		c.onError(err)
 		return
@@ -103,7 +104,7 @@ func (c *ChatBot) SendWelcomeMessage(userPubkey string) {
 	}
 }*/
 
-func (c *ChatBot) onContactMessage(event utopiago.WsEvent) {
+func (c *ChatBot) onContactMessage(event websocket.WsEvent) {
 	c.queues.Contact.AddEvent(event)
 }
 
@@ -114,7 +115,7 @@ func (c *ChatBot) handleContactMessage(e interface{}) {
 		return
 	}
 
-	message, err := event.GetInstantMessage()
+	message, err := helpers.GetInstantMessageFromEvent(event)
 	if err != nil {
 		c.onError(err)
 		return
@@ -148,7 +149,7 @@ func (c *ChatBot) handleContactMessage(e interface{}) {
 	}
 }*/
 
-func (c *ChatBot) onChannelMessage(event utopiago.WsEvent) {
+func (c *ChatBot) onChannelMessage(event websocket.WsEvent) {
 	c.queues.ChannelLobby.AddEvent(event)
 }
 
@@ -159,7 +160,7 @@ func (c *ChatBot) handleChannelLobbyMessage(e interface{}) {
 		return
 	}
 
-	message, err := event.GetChannelMessage()
+	message, err := helpers.GetChannelMessageFromEvent(event)
 	if err != nil {
 		c.onError(err)
 		return
@@ -193,7 +194,7 @@ func (c *ChatBot) handleChannelLobbyMessage(e interface{}) {
 	}
 }*/
 
-func (c *ChatBot) onPrivateChannelMessage(event utopiago.WsEvent) {
+func (c *ChatBot) onPrivateChannelMessage(event websocket.WsEvent) {
 	c.queues.PrivateChannelLobby.AddEvent(event)
 }
 
@@ -204,7 +205,7 @@ func (c *ChatBot) handlePrivateChannelLobbyMessage(e interface{}) {
 		return
 	}
 
-	message, err := event.GetChannelMessage()
+	message, err := helpers.GetChannelMessageFromEvent(event)
 	if err != nil {
 		c.onError(err)
 		return

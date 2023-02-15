@@ -62,6 +62,12 @@ func (c *ChatBot) SendChannelPrivateMessage(channel, userPubkeyHash, msgText str
 	})
 }
 
+// SendChannelMessage - send message to channel
+func (c *ChatBot) SendChannelMessage(channel, msgText string) error {
+	_, err := c.client.SendChannelMessage(channel, msgText)
+	return err
+}
+
 func (c *ChatBot) handleSendPrivateChannelMessageTask(e interface{}) {
 	event, isConvertable := e.(sendChannelPrivateMessageTask)
 	if !isConvertable {

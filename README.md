@@ -28,43 +28,65 @@ go get github.com/Sagleft/uchatbot-engine
 ## Example
 
 ```go
-_, err := uchatbot.NewChatBot(uchatbot.ChatBotData{
-    Client: &utopiago.UtopiaClient{
-        Protocol: "http",
-        Host:     APIHost,
-        Token:    APIToken,
-        Port:     22800,
-        WsPort:   25000,
-    },
-    Chats: []uchatbot.Chat{
-        {ID: "D53B4431FD604E2F0261792444797AA4"},
-        {ID: "A59D8B62E1A59049564A4B0F8B457D45"},
-    },
-    Callbacks: uchatbot.ChatBotCallbacks{
-        OnContactMessage:        OnContactMessage,
-        OnChannelMessage:        OnChannelMessage,
-        OnPrivateChannelMessage: OnPrivateChannelMessage,
-    },
-    UseErrorCallback: true,
-    ErrorCallback:    onError,
-})
-if err != nil {
-    log.Fatalln(err)
-}
-```
+package main
 
-and set your callbacks. example:
+import (
+	"fmt"
+	"log"
 
-```go
-func OnContactMessage(m utopiago.InstantMessage) {
-	fmt.Println("[CONTACT] " + m.Nick + ": " + m.Text)
+	"github.com/Sagleft/uchatbot-engine"
+	utopiago "github.com/Sagleft/utopialib-go/v2"
+	"github.com/Sagleft/utopialib-go/v2/pkg/structs"
+	"github.com/fatih/color"
+)
+
+const APIToken = "your-utopia-api-token"
+
+func main() {
+	_, err := uchatbot.NewChatBot(uchatbot.ChatBotData{
+		Config: utopiago.Config{
+			Host:   "127.0.0.1",
+			Token:  APIToken,
+			Port:   20000,
+			WsPort: 25000,
+		},
+		Chats: []uchatbot.Chat{
+			{ID: "D53B4431FD604E2F0261792444797AA4"},
+			{ID: "A59D8B62E1A59049564A4B0F8B457D45"},
+		},
+		Callbacks: uchatbot.ChatBotCallbacks{
+			OnContactMessage:        OnContactMessage,
+			OnChannelMessage:        OnChannelMessage,
+			OnPrivateChannelMessage: OnPrivateChannelMessage,
+
+			WelcomeMessage: OnWelcomeMessage,
+		},
+		UseErrorCallback: true,
+		ErrorCallback:    onError,
+	})
+	if err != nil {
+		log.Fatalln(err)
+	}
 }
 
-func OnChannelMessage(m utopiago.WsChannelMessage) {
-	fmt.Println("[CHANNEL] " + m.Nick + ": " + m.Text)
+func OnContactMessage(m structs.InstantMessage) {
+	fmt.Printf("[CONTACT] %s: %s\n", m.Nick, m.Text)
 }
 
-func OnPrivateChannelMessage(m utopiago.WsChannelMessage) {
-	fmt.Println("[PRIVATE] " + m.Nick + ": " + m.Text)
+func OnChannelMessage(m structs.WsChannelMessage) {
+	fmt.Printf("[CHANNEL] %s: %s\n", m.Nick, m.Text)
 }
+
+func OnPrivateChannelMessage(m structs.WsChannelMessage) {
+	fmt.Printf("[PRIVATE] %s: %s\n", m.Nick, m.Text)
+}
+
+func OnWelcomeMessage(userPubkey string) string {
+	return fmt.Sprintf("Hello! Your pubkey is %s", userPubkey)
+}
+
+func onError(err error) {
+	color.Red(err.Error())
+}
+
 ```

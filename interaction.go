@@ -3,6 +3,8 @@ package uchatbot
 import (
 	"errors"
 	"reflect"
+
+	"github.com/Sagleft/utopialib-go/v2/pkg/structs"
 )
 
 type sendMessageTask struct {
@@ -90,4 +92,14 @@ func (c *ChatBot) GetOwnPubkey() (string, error) {
 	}
 
 	return data.Pubkey, nil
+}
+
+// GetOwnContact - get account data
+func (c *ChatBot) GetOwnContact() (structs.OwnContactData, error) {
+	return c.client.GetOwnContact()
+}
+
+// SetAccountNickname - set account new nickname
+func (c *ChatBot) SetAccountNickname(nick string) error {
+	return c.client.SetProfileData(nick, "", "")
 }

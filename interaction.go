@@ -4,6 +4,7 @@ import (
 	"errors"
 	"reflect"
 
+	utopiago "github.com/Sagleft/utopialib-go/v2"
 	"github.com/Sagleft/utopialib-go/v2/pkg/structs"
 )
 
@@ -16,6 +17,11 @@ type sendChannelPrivateMessageTask struct {
 	ChannelID      string
 	UserPubkeyHash string
 	MessageText    string
+}
+
+// GetClient - get Utopia client from chat bot
+func (c *ChatBot) GetClient() utopiago.Client {
+	return c.client
 }
 
 // SetReadonly - enable or disable channel readonly mode

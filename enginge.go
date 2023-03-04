@@ -3,11 +3,11 @@ package uchatbot
 import (
 	"errors"
 	"log"
-	"strings"
 	"time"
 
 	swissknife "github.com/Sagleft/swiss-knife"
 	utopiago "github.com/Sagleft/utopialib-go/v2"
+	uErrors "github.com/Sagleft/utopialib-go/v2/pkg/errors"
 	"github.com/Sagleft/utopialib-go/v2/pkg/structs"
 	"github.com/Sagleft/utopialib-go/v2/pkg/websocket"
 	"github.com/beefsack/go-rate"
@@ -170,8 +170,7 @@ func (c *ChatBot) onWsError(err error) {
 		return
 	}
 
-	if strings.Contains(err.Error(), "EOF") {
-
+	if uErrors.CheckErrorConnBroken(err) {
 		c.onError(errors.New("websocket connection closed. attempt to reconnect"))
 
 		for {
@@ -180,10 +179,9 @@ func (c *ChatBot) onWsError(err error) {
 			}
 			time.Sleep(wsReconnectTimeout)
 		}
-
-	} else {
-		c.onError(err)
 	}
+
+	c.onError(err)
 }
 
 func (c *ChatBot) onError(err error) {

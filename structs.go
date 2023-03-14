@@ -58,11 +58,12 @@ type ChatBotData struct {
 	Callbacks ChatBotCallbacks
 
 	// optional
-	Notifications    string               `json:"notifications"` // by default: all
-	UseErrorCallback bool                 `json:"useErrorCallback"`
-	EnableWsSSL      bool                 `json:"enableSSL"` // SSL for websocket connection
-	BuffersCapacity  EventBuffersCapacity `json:"buffersCapacity"`
-	RateLimiters     EventBufferLimiters  `json:"rateLimiters"`
+	SkipConnectionCheck bool                 `json:"skipConnCheck"`
+	Notifications       string               `json:"notifications"` // by default: all
+	UseErrorCallback    bool                 `json:"useErrorCallback"`
+	EnableWsSSL         bool                 `json:"enableSSL"` // SSL for websocket connection
+	BuffersCapacity     EventBuffersCapacity `json:"buffersCapacity"`
+	RateLimiters        EventBufferLimiters  `json:"rateLimiters"`
 
 	ErrorCallback func(err error) `json:"-"`
 }

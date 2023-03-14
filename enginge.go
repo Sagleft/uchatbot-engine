@@ -24,7 +24,7 @@ const (
 // the bot will try to join the list of the specified chats and subscribe to messages
 func NewChatBot(data ChatBotData) (*ChatBot, error) {
 	// check data
-	if data.Config.WsPort == 0 {
+	if data.Config.WsPort == 0 && !data.DisableEvents {
 		return nil, errors.New("ws port is not set")
 	}
 

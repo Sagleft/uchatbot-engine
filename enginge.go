@@ -146,6 +146,10 @@ func (c *ChatBot) setupMessageQueues() error {
 }
 
 func (c *ChatBot) subscribe() error {
+	if c.data.DisableEvents {
+		return nil
+	}
+
 	if c.data.Notifications == "" {
 		c.data.Notifications = "all"
 	}

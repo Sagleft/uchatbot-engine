@@ -64,6 +64,7 @@ type ChatBotData struct {
 	EnableWsSSL         bool                 `json:"enableSSL"` // SSL for websocket connection
 	BuffersCapacity     EventBuffersCapacity `json:"buffersCapacity"`
 	RateLimiters        EventBufferLimiters  `json:"rateLimiters"`
+	DisableEvents       bool                 `json:"disableEvents"`
 
 	ErrorCallback func(err error) `json:"-"`
 }

@@ -2,6 +2,7 @@ package uchatbot
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"time"
 
@@ -16,6 +17,7 @@ import (
 const (
 	defaultBufferCapacity = 150 // events
 	wsReconnectTimeout    = 5 * time.Second
+	waitBetweenReconnect  = 10 * time.Second
 )
 
 // NewChatBot - create new chatbot and connect to Utopia.
@@ -33,8 +35,9 @@ func NewChatBot(data ChatBotData) (*ChatBot, error) {
 		wsHandlers: make(map[string]wsHandler),
 	}
 
+	cb.checkConnection()
+
 	return cb, checkErrors(
-		cb.checkConnection,
 		cb.joinChannels,
 		cb.setupMessageQueues,
 		cb.initHandlers,
@@ -42,16 +45,23 @@ func NewChatBot(data ChatBotData) (*ChatBot, error) {
 	)
 }
 
-func (c *ChatBot) checkConnection() error {
+func (c *ChatBot) checkConnection() {
 	if c.data.SkipConnectionCheck {
-		return nil
+		return
 	}
 
-	if !c.client.CheckClientConnection() {
-		return errors.New("failed to connect to Utopia Client at `" +
-			c.data.Config.Host + "`")
+	for {
+		if !c.client.CheckClientConnection() {
+			c.onError(fmt.Errorf(
+				"failed to connect to Utopia Client at %q",
+				c.data.Config.Host,
+			))
+			time.Sleep(waitBetweenReconnect)
+			continue
+		} else {
+			break
+		}
 	}
-	return nil
 }
 
 func (c *ChatBot) joinChannels() error {

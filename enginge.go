@@ -174,11 +174,15 @@ func (c *ChatBot) subscribe() error {
 		return err
 	}
 
-	return c.client.WsSubscribe(websocket.WsSubscribeTask{
+	c.wsConn, err = c.client.WsSubscribe(websocket.WsSubscribeTask{
 		OnConnected: c.onConnected,
 		Callback:    c.onMessage,
 		ErrCallback: c.onWsError,
 	})
+	if err != nil {
+		return fmt.Errorf("ws subscribe: %w", err)
+	}
+	return nil
 }
 
 func (c *ChatBot) onConnected() {}
@@ -192,6 +196,12 @@ func (c *ChatBot) onWsError(err error) {
 		c.onError(errors.New("websocket connection closed. attempt to reconnect"))
 
 		for {
+			// close old subscription
+			if err := c.wsConn.Close(); err != nil {
+				c.onError(err)
+			}
+
+			// open new connection
 			if err := c.subscribe(); err == nil {
 				return
 			}

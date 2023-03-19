@@ -11,12 +11,12 @@ import (
 type wsHandler func(event websocket.WsEvent)
 
 type ChatBot struct {
-	client utopiago.Client
-
+	client       utopiago.Client
 	data         ChatBotData
 	wsHandlers   map[string]wsHandler
 	queues       eventBuffers
 	rateLimiters botRateLimiters
+	wsConn       websocket.Handler
 }
 
 type botRateLimiters struct {

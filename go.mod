@@ -3,6 +3,7 @@ module github.com/Sagleft/uchatbot-engine
 go 1.18
 
 require (
+	github.com/Sagleft/cronlib v1.0.1
 	github.com/Sagleft/swiss-knife v1.0.8
 	github.com/Sagleft/utopialib-go/v2 v2.10.1
 	github.com/beefsack/go-rate v0.0.0-20220214233405-116f4ca011a0

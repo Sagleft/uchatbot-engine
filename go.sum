@@ -1,3 +1,5 @@
+github.com/Sagleft/cronlib v1.0.1 h1:pbp6RApb3VKOBInYKoEMhAVedQ8wRe5Sx4g/dP4O8a8=
+github.com/Sagleft/cronlib v1.0.1/go.mod h1:ry+IDYw7JCcmIxC1TmvxYsREG710OcJZQJGHOELgnYs=
 github.com/Sagleft/evtwebsocket v1.0.0 h1:De5nktMLflssyrLcBLi9yVJM65sbVUIWItcVjhDeOP4=
 github.com/Sagleft/evtwebsocket v1.0.0/go.mod h1:Tcws35VyLh2cL1MqUXn6/4+w3rlEsMUt2grpUVSHoYw=
 github.com/Sagleft/swiss-knife v1.0.8 h1:1VnCvLWczRynPefA5yxiA8vGVPjTybrNdBAmTAriqsw=

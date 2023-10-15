@@ -68,15 +68,16 @@ func (srv *DonateService) SetMessage(newMessage string) *DonateService {
 	return srv
 }
 
-func (srv *DonateService) Do() error {
+// GetDonateMessage returns ownerPubkey, message, error
+func (srv *DonateService) GetDonateMessage() (string, string, error) {
 	if srv.channelID == "" {
-		return errors.New("channel ID is not set")
+		return "", "", errors.New("channel ID is not set")
 	}
 
 	// find channel author payment address
 	channelData, err := srv.c.GetClient().GetChannelInfo(srv.channelID)
 	if err != nil {
-		return fmt.Errorf(
+		return "", "", fmt.Errorf(
 			"get channel %q data: %w",
 			srv.channelID, err,
 		)
@@ -84,7 +85,7 @@ func (srv *DonateService) Do() error {
 
 	ownerPubkey := channelData.Owner
 	if ownerPubkey == "" {
-		return fmt.Errorf(
+		return "", "", fmt.Errorf(
 			"channel %q owner unknown: pubkey is empty",
 			srv.channelID,
 		)
@@ -94,6 +95,14 @@ func (srv *DonateService) Do() error {
 		"%s %s",
 		srv.message, ownerPubkey,
 	)
+	return ownerPubkey, msg, nil
+}
+
+func (srv *DonateService) Do() error {
+	ownerPubkey, msg, err := srv.GetDonateMessage()
+	if err != nil {
+		return fmt.Errorf("get donate message: %w", err)
+	}
 
 	if err := srv.c.SendChannelMessage(srv.channelID, msg); err != nil {
 		return fmt.Errorf(

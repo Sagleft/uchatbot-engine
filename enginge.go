@@ -175,25 +175,39 @@ func (c *ChatBot) subscribe() error {
 		return err
 	}
 
-	connected := make(chan struct{})
+	connected := make(chan connResult)
 	onConnected := func() {
-		connected <- struct{}{}
+		connected <- connResult{isConnected: true}
 	}
 
-	select {
-	case timeTo := <-time.After(wsFirstSubscribeTimeout):
-		return fmt.Errorf("ws subscribe timeout after %s", time.Since(timeTo).String())
-	case <-connected:
+	go func() {
 		c.wsConn, err = c.client.WsSubscribe(websocket.WsSubscribeTask{
 			OnConnected: onConnected,
 			Callback:    c.onMessage,
 			ErrCallback: c.onWsError,
 		})
 		if err != nil {
-			return fmt.Errorf("ws subscribe: %w", err)
+			connected <- connResult{
+				err: fmt.Errorf("ws subscribe: %w", err),
+			}
 		}
-		return nil
+	}()
+
+	timeFrom := time.Now()
+	select {
+	case <-time.After(wsFirstSubscribeTimeout):
+		return fmt.Errorf("ws subscribe timeout after %s", time.Since(timeFrom).String())
+	case result := <-connected:
+		if result.isConnected {
+			return nil
+		}
+		return result.err
 	}
+}
+
+type connResult struct {
+	isConnected bool
+	err         error
 }
 
 func (c *ChatBot) onWsError(err error) {

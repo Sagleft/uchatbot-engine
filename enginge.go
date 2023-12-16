@@ -232,3 +232,10 @@ func (c *ChatBot) onError(err error) {
 		log.Println("ERROR: " + err.Error())
 	}
 }
+
+// Wait - blocking method
+func (c *ChatBot) Wait() {
+	forever := make(chan struct{})
+	// run in background
+	<-forever
+}

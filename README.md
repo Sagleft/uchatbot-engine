@@ -43,7 +43,7 @@ import (
 const APIToken = "your-utopia-api-token"
 
 func main() {
-	_, err := uchatbot.NewChatBot(uchatbot.ChatBotData{
+	bot, err := uchatbot.NewChatBot(uchatbot.ChatBotData{
 		Config: utopiago.Config{
 			Host:   "127.0.0.1",
 			Token:  APIToken,
@@ -67,6 +67,9 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+
+	log.Println("bot started")
+	bot.Wait()
 }
 
 func OnContactMessage(m structs.InstantMessage) {

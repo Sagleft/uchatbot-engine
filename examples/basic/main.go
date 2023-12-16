@@ -20,7 +20,7 @@ var chats = []uchatbot.Chat{
 }
 
 func main() {
-	_, err := uchatbot.NewChatBot(uchatbot.ChatBotData{
+	bot, err := uchatbot.NewChatBot(uchatbot.ChatBotData{
 		Config: utopiago.Config{
 			Host:   utopiaHost,
 			Token:  APIToken,
@@ -41,6 +41,9 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+
+	log.Println("bot started")
+	bot.Wait()
 }
 
 func OnContactMessage(m structs.InstantMessage) {

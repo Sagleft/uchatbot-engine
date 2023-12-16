@@ -15,9 +15,10 @@ import (
 )
 
 const (
-	defaultBufferCapacity = 150 // events
-	wsReconnectTimeout    = 5 * time.Second
-	waitBetweenReconnect  = 10 * time.Second
+	defaultBufferCapacity   = 150 // events
+	wsReconnectTimeout      = 5 * time.Second
+	wsFirstSubscribeTimeout = 30 * time.Second
+	waitBetweenReconnect    = 10 * time.Second
 )
 
 // NewChatBot - create new chatbot and connect to Utopia.
@@ -174,18 +175,26 @@ func (c *ChatBot) subscribe() error {
 		return err
 	}
 
-	c.wsConn, err = c.client.WsSubscribe(websocket.WsSubscribeTask{
-		OnConnected: c.onConnected,
-		Callback:    c.onMessage,
-		ErrCallback: c.onWsError,
-	})
-	if err != nil {
-		return fmt.Errorf("ws subscribe: %w", err)
+	connected := make(chan struct{})
+	onConnected := func() {
+		connected <- struct{}{}
 	}
-	return nil
-}
 
-func (c *ChatBot) onConnected() {}
+	select {
+	case timeTo := <-time.After(wsFirstSubscribeTimeout):
+		return fmt.Errorf("ws subscribe timeout after %s", time.Since(timeTo).String())
+	case <-connected:
+		c.wsConn, err = c.client.WsSubscribe(websocket.WsSubscribeTask{
+			OnConnected: onConnected,
+			Callback:    c.onMessage,
+			ErrCallback: c.onWsError,
+		})
+		if err != nil {
+			return fmt.Errorf("ws subscribe: %w", err)
+		}
+		return nil
+	}
+}
 
 func (c *ChatBot) onWsError(err error) {
 	if err == nil {

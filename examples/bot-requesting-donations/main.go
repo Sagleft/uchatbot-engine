@@ -60,6 +60,9 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+
+	log.Println("bot started")
+	app.chatbot.Wait()
 }
 
 func OnContactMessage(m structs.InstantMessage) {

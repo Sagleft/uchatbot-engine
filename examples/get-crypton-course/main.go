@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/Sagleft/uchatbot-engine"
@@ -37,5 +38,11 @@ func runBot() error {
 		UseErrorCallback: true,
 		ErrorCallback:    onError,
 	})
-	return err
+	if err != nil {
+		return fmt.Errorf("create chatbot: %w", err)
+	}
+
+	log.Println("bot started")
+	app.chatbot.Wait()
+	return nil
 }

@@ -180,9 +180,10 @@ func (c *ChatBot) subscribe() error {
 		connected <- struct{}{}
 	}
 
+	timeFrom := time.Now()
 	select {
-	case timeTo := <-time.After(wsFirstSubscribeTimeout):
-		return fmt.Errorf("ws subscribe timeout after %s", time.Since(timeTo).String())
+	case <-time.After(wsFirstSubscribeTimeout):
+		return fmt.Errorf("ws subscribe timeout after %s", time.Since(timeFrom).String())
 	case <-connected:
 		c.wsConn, err = c.client.WsSubscribe(websocket.WsSubscribeTask{
 			OnConnected: onConnected,

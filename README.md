@@ -97,3 +97,9 @@ func onError(err error) {
 ## If you have any questions
 
 You can find me in Utopia: F50AF5410B1F3F4297043F0E046F205BCBAA76BEC70E936EB0F3AB94BF316804
+
+---
+
+## You might also be interested in:
+
+[![automate crypto trading](https://github.com/Sagleft/Sagleft/blob/master/matrixbot_github_banner_1.png?raw=true)](https://t.me/get_matrixbot?start=github_org)

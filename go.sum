@@ -4,8 +4,8 @@ github.com/Sagleft/evtwebsocket v1.0.1 h1:x82Aqt+wszt+LNj+QhA3uRMxBk9h12+Jow8BHH
 github.com/Sagleft/evtwebsocket v1.0.1/go.mod h1:WxjJTmD0fKEnvyF6NmtPE3sfi/6tXf5qDf9zl/BBP0s=
 github.com/Sagleft/swiss-knife v1.0.8 h1:1VnCvLWczRynPefA5yxiA8vGVPjTybrNdBAmTAriqsw=
 github.com/Sagleft/swiss-knife v1.0.8/go.mod h1:qPlA/Y53sIYAyJI+E3StPw3vNSy9rzxAeh03oemFM9g=
-github.com/Sagleft/utopialib-go/v2 v2.10.2 h1:ZkTj6ydVVfljk0QlKy3GWhFMLMa0WPJ73Z6k8491YjE=
-github.com/Sagleft/utopialib-go/v2 v2.10.2/go.mod h1:S6LzPQoJbSSHWEhdJqDYqWVkSji0D5x6fM4Nnie2pP4=
+github.com/Sagleft/utopialib-go/v2 v2.11.1 h1:qfX57tc3GuS4EO+3xl5Bx0QdFqwGfwsl/rwFVPfSr4Y=
+github.com/Sagleft/utopialib-go/v2 v2.11.1/go.mod h1:S6LzPQoJbSSHWEhdJqDYqWVkSji0D5x6fM4Nnie2pP4=
 github.com/beefsack/go-rate v0.0.0-20220214233405-116f4ca011a0 h1:0b2vaepXIfMsG++IsjHiI2p4bxALD1Y2nQKGMR5zDQM=
 github.com/beefsack/go-rate v0.0.0-20220214233405-116f4ca011a0/go.mod h1:6YNgTHLutezwnBvyneBbwvB8C82y3dcoOj5EQJIdGXA=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
